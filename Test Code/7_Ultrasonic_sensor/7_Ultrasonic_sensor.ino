@@ -17,7 +17,7 @@ void setup() {
 
 void loop() {
   float distance = Get_Distance();  //Get the distance and save in the distance variable  
-  Serial.print("ditance:");
+  Serial.print("distance:");
   Serial.print(distance);
   Serial.println("cm");
   delay(100);

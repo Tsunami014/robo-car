@@ -28,9 +28,15 @@ decode_results results;
 #define speed2   speed1       //Left front motor speed
 #define speed3   speed4       //Left rear motor speed
 
+/*******Ultrasonic Sensor interface*****/
+#define EchoPin  13  //ECHO to D13
+#define TrigPin  12  //TRIG to D12
+
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(9600); //Set baud rate to 9600
+  pinMode(EchoPin, INPUT);    //The ECHO pin is set to input mode
+  pinMode(TrigPin, OUTPUT);   //The TRIG pin is set to output mode
   /****All motor control pins are set to output mode***/
   pinMode(M1, OUTPUT);
   pinMode(PWM1, OUTPUT);
@@ -46,6 +52,10 @@ void setup()
 }
 
 void loop() {
+  float distance = Get_Distance();  //Get the distance and save in the distance variable  
+  Serial.print("distance:");
+  Serial.print(distance);
+  Serial.println(" cm");
   if (irrecv.decode(&results)) {
     switch (results.value)
     {
@@ -65,6 +75,18 @@ void loop() {
     irrecv.resume(); // Receive the next value
   }
 
+}
+
+float Get_Distance(void) {    //Ultrasonic detects the distance
+  float dis;
+  digitalWrite(TrigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TrigPin, HIGH); //Give the TRIG a high level of at least 10 µ s to trigger
+  delayMicroseconds(10);
+  digitalWrite(TrigPin, LOW);
+  dis = pulseIn(EchoPin, HIGH) /58.2;  //Work out the distance
+  delay(50);
+  return dis;
 }
 
 /**********The car advance***********/
