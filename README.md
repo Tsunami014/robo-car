@@ -7,3 +7,7 @@
 Run the python code main.py alongside the robot car for coolness!
 
 Make sure you install the python stuff with `pip install -r requirements.txt`!
+
+For ease of reference:
+
+![How to install bluetooth module img](image.png)
