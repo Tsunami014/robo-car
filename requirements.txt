@@ -1,2 +1,3 @@
 pyserial
+ble-serial
 pygame

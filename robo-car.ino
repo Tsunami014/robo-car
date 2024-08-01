@@ -3,6 +3,8 @@
   lesson 12.1
   APP Test
   http://www.keyestudio.com
+
+  LOOK AT https://forum.arduino.cc/t/writing-gyroscope-values-to-ble-characteristic/1017149/3
 */
 
 void setup() {
