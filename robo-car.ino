@@ -12,11 +12,11 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("Hello World!");
+  //Serial.println("Hello World!");
   delay(1000);
-  // if (Serial.available())//If the receiving area is not empty
-  // {
-  //   char ble_val = Serial.read(); //Read the data of the bluetooth
-  //   Serial.println(ble_val); //The serial monitor prints the read data
-  // }
+  if (Serial.available())//If the receiving area is not empty
+  {
+    String ble_val = Serial.read(); //Read the data of the bluetooth
+    Serial.print(ble_val); //The serial monitor prints the read data
+  }
 }

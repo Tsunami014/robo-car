@@ -11,8 +11,16 @@ while True:
         break
     except:
         time.sleep(1)
+
+def inputLoop():
+    while True:
+        arduino.write(bytes(input(), 'utf8'))
+
+Thread(target=inputLoop, daemon=True).start()
+
 while True:
-    data = arduino.readline()
-    clean = data.strip(b'\xff\xdf')
-    txt = clean.decode()
-    print(txt, end='')
+    data = arduino.read_all()
+    if data is not None:
+        clean = data.strip(b'\xff\xdf')
+        txt = clean.decode()
+        print(txt, end='')
