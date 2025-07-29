@@ -1,3 +1,4 @@
 pyserial
 ble-serial
 pygame
+opencv-python

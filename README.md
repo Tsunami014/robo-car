@@ -1,5 +1,5 @@
 # robo car
- The COOLEST robo car code EVER >:) Specifically pitched at my KS0551 Keyestudio robo car
+ The COOLEST robo car code EVER >:) Specifically pitched at my KS0551 Keyestudio robo car and it's ESP32 "AI thinker" camera attached to play mario kart hopefully!
 
 [Arduino Libraries](https://www.dropbox.com/sh/sdlgtym49vvh0qx/AADEx_4IiABLLvVA_lS9U_mHa/Libraries?dl=0&subfolder_nav_tracking=1)
 
