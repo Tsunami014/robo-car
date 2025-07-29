@@ -1,5 +1,0 @@
-{
-    "sketch": "robo-car.ino",
-    "port": "COM3",
-    "board": "arduino:avr:uno"
-}
