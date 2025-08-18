@@ -46,9 +46,10 @@ while True:
                 sum(i[1] for i in cns[0])/len(cns[0])
             ), dtype=np.int64)
             std = (find_std([i[0] for i in cns[0]]), find_std([i[1] for i in cns[0]]))
-            nbanana = cv2.resize(banana, std)
+            mstd = max(std)*2
+            nbanana = cv2.resize(banana, (mstd, mstd))
             h, w, _ = nbanana.shape
-            overlay_img(frame, nbanana, centre[0]-w//2, centre[1]-h//2)
+            overlay_img(frame, nbanana, centre[0]-w//2, int(centre[1]-h/4*3))
     cv2.imshow('Display', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'): # Press 'q' to quit
         break
