@@ -42,6 +42,9 @@ def find_std(pts):
     mean = sum(pts)/len(pts)
     return round(math.sqrt(sum(pow(i-mean, 2) for i in pts)/len(pts)))
 
+def fmt(x):
+    return f'{x:.2f}'.rjust(5)
+
 cap = cv2.VideoCapture("http://192.168.4.1:81/stream")
 if not cap.isOpened():
     print("Error: Could not open video stream.")
@@ -49,6 +52,9 @@ if not cap.isOpened():
 aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_6X6_50)
 arucoParameters = aruco.DetectorParameters()
 detector = aruco.ArucoDetector(aruco_dict, arucoParameters)
+prevFrame = None
+x, y, z = 0, 0, 0
+p, r, yw = 0, 0, 0
 while True:
     ret, frame = cap.read()
     if not ret:
@@ -74,9 +80,9 @@ while True:
             """# Print 3D position
             x, y, z = tvecs[i]
             x, y, z = x[0], y[0], z[0]
-            p, r, y = rvecs[i]  # Pitch Roll Yaw
-            p, r, y = p[0], r[0], y[0]
-            print(f"Marker ID {ids[i][0]} position: x={x:.2f}, y={y:.2f}, z={z:.2f}, pitch={p:.2f}, roll={r:.2f}, yaw={y:.2f}")"""
+            p, r, yw = rvecs[i]  # Pitch Roll Yaw
+            p, r, yw = p[0], r[0], yw[0]
+            print(f"Marker ID {ids[i][0]} position: x={x:.2f}, y={y:.2f}, z={z:.2f}, pitch={p:.2f}, roll={r:.2f}, yaw={yw:.2f}")"""
 
         """for idx in range(len(ids)):
             id, cns = ids[idx], corners[idx]
@@ -90,6 +96,35 @@ while True:
             nbanana = cv2.resize(banana, (mstd, mstd))
             h, w, _ = nbanana.shape
             overlay_img(frame, nbanana, centre[0]-w//2, int(centre[1]-h/4*3))"""
+    elif prevFrame is not None:
+        orb = cv2.ORB_create()
+        kp1, des1 = orb.detectAndCompute(frame, None)
+        kp2, des2 = orb.detectAndCompute(prevFrame, None)
+
+        if des1 is not None and des2 is not None:
+            matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+            matches = matcher.match(des1, des2)
+            
+            pts1 = np.float32([kp1[m.queryIdx].pt for m in matches])
+            pts2 = np.float32([kp2[m.trainIdx].pt for m in matches])
+
+            try:
+                E, mask = cv2.findEssentialMat(pts1, pts2, cameraMatrix)
+                _, R, t, mask = cv2.recoverPose(E, pts1, pts2, cameraMatrix)
+                done = True
+            except Exception:
+                done = False
+            if done:
+                dx, dy, dz = t
+                dx, dy, dz = dx[0], dy[0], dz[0]
+                dp, dr, dyw = R  # Pitch Roll Yaw
+                dp, dr, dyw = dp[0], dr[0], dyw[0]
+                p = p-1
+                x, y, z = x + dx, y + dy, z + dz
+                p, r, yw = p + dp, r + dr, y + dyw
+                print(f"Movement position:\n    x={fmt(x)}, y={fmt(y)}, z={fmt(z)},\n    pitch={fmt(p)}, roll={fmt(r)}, yaw={fmt(yw)}")
+
+    prevFrame = frame
     cv2.imshow('Display', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'): # Press 'q' to quit
         break
